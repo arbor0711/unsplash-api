@@ -1,13 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiSearch2Line } from "react-icons/ri";
 
 function App() {
   const [value, setValue] = useState("");
-  console.log(value);
+  const [page, setPage] = useState(1);
+  const [results, setResults] = useState("");
+  const [show, setShow] = useState(false);
+
+  const fetchImage = () => {
+    fetch(
+      `https://api.unsplash.com/search/photos/?client_id=7gZhbUqgeISI01wX_83EXryVDOSJAP-89VQTcaJw9Qk&query=${value}&page=${page}&per_page=12`
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setResults(data.results);
+      });
+  };
+
+  useEffect(fetchImage, [page]);
+
+  let selectPrev = page === 1 ? true : false;
+  let selectNext = page === 8 ? true : false;
+
+  const goToTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+  const nextPage = () => {
+    setPage(page + 1);
+    goToTop();
+  };
+
+  const prevPage = () => {
+    setPage(page - 1);
+    goToTop();
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    fetchImage();
+    setPage(1);
+    setShow(true);
+  };
+
   return (
     <React.Fragment>
       <header className="navbar">
-        <form>
+        <form onSubmit={submitHandler}>
           <label htmlFor="search">Search high-resolution images</label>
           <input
             type="search"
@@ -23,25 +64,24 @@ function App() {
           </button>
         </form>
       </header>
-      <main>
-        <h2 className="title">
-          Results for: <span>{value}</span>
-        </h2>
-        <div className="gallery">
-          <img
-            src="https://images.unsplash.com/flagged/photo-1578240358966-610647316c40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW90b2N5Y2xlfGVufDB8fDB8fHww&auto=format&fit=crop&w=400&q=60"
-            alt=""
-          />
-          <img
-            src="https://images.unsplash.com/flagged/photo-1578240358966-610647316c40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW90b2N5Y2xlfGVufDB8fDB8fHww&auto=format&fit=crop&w=400&q=60"
-            alt=""
-          />
-          <img
-            src="https://images.unsplash.com/flagged/photo-1578240358966-610647316c40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW90b2N5Y2xlfGVufDB8fDB8fHww&auto=format&fit=crop&w=400&q=60"
-            alt=""
-          />
-        </div>
-      </main>
+      {show && (
+        <main>
+          <div className="gallery">
+            {results.map((result) => {
+              return <img key={result.id} src={result.urls.regular} alt="" />;
+            })}
+          </div>
+          <div className="btns">
+            <button disabled={selectPrev} onClick={prevPage}>
+              &lt; prev page
+            </button>
+            <p>{page}</p>
+            <button disabled={selectNext} onClick={nextPage}>
+              next page &gt;
+            </button>
+          </div>
+        </main>
+      )}
     </React.Fragment>
   );
 }

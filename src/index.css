@@ -13,7 +13,7 @@ body {
 
 .navbar {
   height: 50px;
-  background-color: navy;
+  background-color: rgb(50, 50, 50);
   color: #fff;
   display: flex;
   align-items: center;
@@ -53,19 +53,9 @@ button {
   width: 50px;
   margin-left: 5px;
 }
+
 /* Gallery style */
-.title {
-  font-size: large;
-  color: #666;
-  margin: 20px;
-  font-style: italic;
-}
-.title span {
-  color: #000;
-  text-transform: uppercase;
-  font-style: normal;
-  padding-left: 10px;
-}
+
 .gallery {
   padding: 20px;
   display: flex;
@@ -75,7 +65,22 @@ button {
   gap: 10px;
 }
 .gallery img {
-  width: 30%;
+  width: 300px;
   height: 400px;
   object-fit: cover;
+}
+
+.btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 30px;
+  outline: none;
+}
+.btns button {
+  border-width: 0.5px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.1s;
+  width: 100px;
 }
